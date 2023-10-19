@@ -1,0 +1,87 @@
+/*
+ * 
+ * ARDUINO SEM CONECTOR:
+ * 
+ * 
+ * By: EmersonM.N
+ * 18/05/2023
+ * 
+ * Este programa esta destinado ao controle de uma maquina extrusora,
+ * sua função é monitorar a temperatura de um hotend a 240°C e fazer
+ * o chaveamento do mesmo atraves de um modulo rele.
+ * 
+ * Pinagem:
+ * Sensor de temperatura - A0
+ * Modulo Relé - 2
+ * SCL
+ * 
+ */
+
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+#define releExtru 7
+
+Thermistor temp(A0);
+
+void setup() {
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+  pinMode(releExtru, OUTPUT);
+  digitalWrite(releExtru, HIGH);
+
+  lcd.setCursor (0,0);
+  lcd.print ("EXTRUSORA V2.0");
+  lcd.setCursor (0,1);
+  lcd.print ("");
+  delay(700);
+  
+  lcd.setCursor (0,0);
+  lcd.print ("EXTRUSORA V2.0");
+  lcd.setCursor (0,1);
+  lcd.print ("Start Setup");
+  delay(700);
+
+  lcd.setCursor (0,0);
+  lcd.print ("EXTRUSORA V2.0");
+  lcd.setCursor (0,1);
+  lcd.print ("Start Setup.");
+  delay(700);
+
+  lcd.setCursor (0,0);
+  lcd.print ("EXTRUSORA V2.0");
+  lcd.setCursor (0,1);
+  lcd.print ("Start Setup..");
+  delay(700);
+
+  lcd.setCursor (0,0);
+  lcd.print ("EXTRUSORA V2.0");
+  lcd.setCursor (0,1);
+  lcd.print ("Start Setup...");
+  delay(700);
+  lcd.clear();
+}
+
+void loop() {
+  int temperature = temp.getTemp();
+  /*Serial.print("Temperatura no Sensor eh: ");
+  Serial.print(temperature);
+  Serial.println("*C");
+  */
+  lcd.setCursor (0,0);
+  lcd.print("TEMP:");
+  lcd.print(temperature);
+  lcd.println("C");
+  delay(500);
+
+  if (temperature < 220){
+    // Ligar o relé se a temperatura estiver abaixo de 220°C
+    digitalWrite(releExtru, LOW);
+  } else if (temperature > 230){
+    // Desligar o relé se a temperatura estiver acima de 230°C
+    digitalWrite(releExtru, HIGH);
+  }
+  // Mantém o estado do relé se a temperatura estiver dentro da faixa de histerese
+  // Não faz nada para evitar flutuações rápidas
+}
